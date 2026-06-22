@@ -229,6 +229,20 @@ tbody td {
   transition: background .15s;
 }
 .filterable-th:hover { background: #1e3360 !important; }
+.seq-th {
+  background: #12213a !important;
+  color: #4e8ef7 !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+  padding: 10px 8px !important;
+  font-size: 13px !important;
+}
+.seq-td {
+  text-align: center !important;
+  color: #4e8ef7 !important;
+  font-weight: 600 !important;
+  background: #0d1526 !important;
+}
 .filterable-th .sort-arrow {
   position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
   font-size: 10px; opacity: 0.4; transition: opacity .2s;
@@ -373,6 +387,7 @@ tbody td {
       <table id="detailTable">
         <thead>
           <tr>
+            <th class="seq-th" style="width:54px;">序</th>
             <th class="filterable-th" data-col="0" data-table="detail" onclick="toggleHdrDropdown(event, 'detail', 0)">所属区域<span class="sort-arrow">↕</span></th>
             <th class="filterable-th" data-col="1" data-table="detail" onclick="toggleHdrDropdown(event, 'detail', 1)">网点名称<span class="sort-arrow">↕</span></th>
             <th class="filterable-th" data-col="2" data-table="detail" onclick="toggleHdrDropdown(event, 'detail', 2)">人员姓名<span class="sort-arrow">↕</span></th>
@@ -420,6 +435,7 @@ tbody td {
       <table id="tripTable">
         <thead>
           <tr>
+            <th class="seq-th" style="width:54px;">序</th>
             <th class="filterable-th" data-col="0" data-table="trip" onclick="toggleHdrDropdown(event, 'trip', 0)">所属区域<span class="sort-arrow">↕</span></th>
             <th class="filterable-th" data-col="1" data-table="trip" onclick="toggleHdrDropdown(event, 'trip', 1)">网点名称<span class="sort-arrow">↕</span></th>
             <th class="filterable-th" data-col="2" data-table="trip" onclick="toggleHdrDropdown(event, 'trip', 2)">人员姓名<span class="sort-arrow">↕</span></th>
@@ -444,6 +460,7 @@ tbody td {
       <table id="ffrTable">
         <thead>
           <tr>
+            <th class="seq-th" style="width:54px;">序</th>
             <th class="filterable-th" data-col="0" data-table="ffr" onclick="toggleHdrDropdown(event, 'ffr', 0)">所属区域<span class="sort-arrow">↕</span></th>
             <th class="filterable-th" data-col="1" data-table="ffr" onclick="toggleHdrDropdown(event, 'ffr', 1)">网点名称<span class="sort-arrow">↕</span></th>
             <th class="filterable-th" data-col="2" data-table="ffr" onclick="toggleHdrDropdown(event, 'ffr', 2)">人员姓名<span class="sort-arrow">↕</span></th>
@@ -1434,17 +1451,18 @@ function renderTableRows(data) {
   var info = document.getElementById('tableInfo');
 
   if (data.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;color:#3a5a80;">暂无数据</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:30px;color:#3a5a80;">暂无数据</td></tr>';
     info.textContent = '';
     return;
   }
 
   info.textContent = '共 ' + data.length + ' 条记录';
-  tbody.innerHTML = data.map(function(d) {
+  tbody.innerHTML = data.map(function(d, i) {
     var ffr = d.first_fix_rate === null ? '-' : (d.first_fix_rate * 100).toFixed(1) + '%';
     var ffrClass = (d.first_fix_rate !== null && d.first_fix_rate < 0.6) ? 'ffr-low' : '';
     var siteTrunc = d.site.length > 18 ? d.site.substring(0, 17) + '…' : d.site;
     return '<tr>' +
+      '<td class="seq-td">' + (i + 1) + '</td>' +
       '<td>' + d.area + '</td>' +
       '<td title="' + d.site.replace(/"/g, '&quot;') + '">' + siteTrunc + '</td>' +
       '<td>' + d.name + '</td>' +
@@ -1641,15 +1659,16 @@ function renderTripTable(filtered) {
   var info = document.getElementById('tripTableInfo');
 
   if (data.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:#3a5a80;">暂无跳闸数据</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;color:#3a5a80;">暂无跳闸数据</td></tr>';
     info.textContent = '';
     return;
   }
 
   info.textContent = '共 ' + data.length + ' 条记录';
-  tbody.innerHTML = data.map(function(d) {
+  tbody.innerHTML = data.map(function(d, i) {
     var siteTrunc = d.site.length > 18 ? d.site.substring(0, 17) + '…' : d.site;
     return '<tr>' +
+      '<td class="seq-td">' + (i + 1) + '</td>' +
       '<td>' + d.area + '</td>' +
       '<td title="' + d.site.replace(/"/g, '&quot;') + '">' + siteTrunc + '</td>' +
       '<td>' + d.name + '</td>' +
@@ -1694,17 +1713,18 @@ function renderFFRTable(filtered) {
   var info = document.getElementById('ffrTableInfo');
 
   if (sorted.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:#3a5a80;">暂无低一次就好率数据</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;color:#3a5a80;">暂无低一次就好率数据</td></tr>';
     info.textContent = '';
     return;
   }
 
   info.textContent = '共 ' + sorted.length + ' 条记录（按一次就好率从低到高排序）';
-  tbody.innerHTML = sorted.map(function(d) {
+  tbody.innerHTML = sorted.map(function(d, i) {
     var ffr = d.first_fix_rate === null ? '-' : (d.first_fix_rate * 100).toFixed(1) + '%';
     var siteTrunc = d.site.length > 18 ? d.site.substring(0, 17) + '…' : d.site;
     var tripMark = d.service_trip === 1 ? ' <span class="trip-flag">●跳</span>' : '';
     return '<tr>' +
+      '<td class="seq-td">' + (i + 1) + '</td>' +
       '<td>' + d.area + '</td>' +
       '<td title="' + d.site.replace(/"/g, '&quot;') + '">' + siteTrunc + '</td>' +
       '<td>' + d.name + tripMark + '</td>' +
