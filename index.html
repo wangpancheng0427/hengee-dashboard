@@ -516,7 +516,7 @@ var tableValueFilters = {detail: {}, trip: {}, ffr: {}};
 var tableColNames = {
   detail: ['所属区域','网点名称','人员姓名','人员属性','大区经理','月份','跳闸','一次就好率','不合格次数总计'],
   trip:   ['所属区域','网点名称','人员姓名','人员属性','大区经理','月份','跳闸','总计跳闸次数'],
-  ffr:    ['所属区域','网点名称','人员姓名','人员属性','大区经理','月份','一次就好率']
+  ffr:    ['所属区域','网点名称','人员姓名','人员属性','大区经理','月份','一次就好率','总计低一次就好率次数']
 };
 
 // 当前激活的下拉菜单归属
@@ -604,6 +604,7 @@ function getColDisplayValue(d, colIdx, tableId) {
       case 3: return d.type; case 4: return d.big_area_manager;
       case 5: return d.month + '月';
       case 6: return d.first_fix_rate === null ? '-' : (d.first_fix_rate * 100).toFixed(1) + '%';
+      case 7: return String(d.ffr_unqual_total_all_months || 0);
     }
   }
   return '';
