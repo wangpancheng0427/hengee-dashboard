@@ -574,7 +574,18 @@ function getTableData(tableId) {
     var td = filtered.filter(function(d) { return d.service_trip === 1; });
     return currentTripTypeFilter ? td.filter(function(d) { return d.type === currentTripTypeFilter; }) : td;
   } else if (tableId === 'ffr') {
-    var fd = filtered.filter(function(d) { return d.first_fix_rate !== null && d.first_fix_rate < 0.6; });
+    // 使用RAW_FFR_ALL（含ffr_unqual_total_all_months字段），与renderFFRTable一致
+    var m = document.getElementById('selMonth').value;
+    var bm = document.getElementById('selBigManager').value;
+    var am = document.getElementById('selAreaManager').value;
+    var tp = document.getElementById('selType').value;
+    var fd = RAW_FFR_ALL.filter(function(d) {
+      if (m && String(d.month) !== m) return false;
+      if (bm && d.big_area_manager !== bm) return false;
+      if (am && d.area_manager !== am) return false;
+      if (tp && d.type !== tp) return false;
+      return true;
+    });
     return currentFFRTypeFilter ? fd.filter(function(d) { return d.type === currentFFRTypeFilter; }) : fd;
   }
   return filtered;
