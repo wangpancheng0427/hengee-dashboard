@@ -647,6 +647,18 @@ function getColDisplayValue(d, colIdx, tableId) {
 function buildValueFilters(tableId, colIdx) {
   var container = document.getElementById('hdrValueFilters');
   var data = getTableData(tableId);
+  // 应用其他列已生效的值筛选（排除当前列），实现联动
+  var filters = tableValueFilters[tableId];
+  if (filters) {
+    var otherCols = Object.keys(filters).filter(function(k) { return parseInt(k) !== colIdx; });
+    otherCols.forEach(function(oc) {
+      var allowed = filters[oc];
+      if (!allowed) return;
+      data = data.filter(function(d) {
+        return allowed.has(getColDisplayValue(d, parseInt(oc), tableId));
+      });
+    });
+  }
   // 收集去重值并计数
   var valCounts = {};
   data.forEach(function(d) {
