@@ -647,6 +647,18 @@ function getColDisplayValue(d, colIdx, tableId) {
 function buildValueFilters(tableId, colIdx) {
   var container = document.getElementById('hdrValueFilters');
   var data = getTableData(tableId);
+  // 应用其他列已生效的值筛选（排除当前列），实现联动
+  var filters = tableValueFilters[tableId];
+  if (filters) {
+    var otherCols = Object.keys(filters).filter(function(k) { return parseInt(k) !== colIdx; });
+    otherCols.forEach(function(oc) {
+      var allowed = filters[oc];
+      if (!allowed) return;
+      data = data.filter(function(d) {
+        return allowed.has(getColDisplayValue(d, parseInt(oc), tableId));
+      });
+    });
+  }
   // 收集去重值并计数
   var valCounts = {};
   data.forEach(function(d) {
@@ -1038,7 +1050,7 @@ function renderTrendChart() {
         label: {show: true, position: 'top', color: '#5AD8A6', fontSize: 12, fontWeight: 700, formatter:'{c}%'},
         markLine: {
           silent: true, symbol: 'none',
-          data: [{yAxis: 95, label: {formatter:'目标 95%', color:'#E86452', fontSize: 11}, lineStyle: {color:'rgba(232,100,82,0.5)', type:'dashed', width:1.5}}]
+          data: [{yAxis: 85, label: {formatter:'目标 85%', color:'#E86452', fontSize: 11}, lineStyle: {color:'rgba(232,100,82,0.5)', type:'dashed', width:1.5}}]
         }
       }]
     });
@@ -1162,7 +1174,7 @@ function renderTrendChart() {
         },
         markLine: {
           silent: true, symbol: 'none',
-          data: [{xAxis: 95, label: {formatter:'目标 95%', color:'#E86452', fontSize: 11}, lineStyle: {color:'rgba(232,100,82,0.5)', type:'dashed', width:1.5}}]
+          data: [{xAxis: 85, label: {formatter:'目标 85%', color:'#E86452', fontSize: 11}, lineStyle: {color:'rgba(232,100,82,0.5)', type:'dashed', width:1.5}}]
         }
       }]
     });
